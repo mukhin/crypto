@@ -11,13 +11,13 @@ int main(int argc, char **argv) {
   opt->parseArgs(argc, argv);
   opt->printArgs();
 
-  BlowFish* blowfish = new BlowFish(opt->getInputFileName(), opt->getOutputFileName(), opt->getKeyFileName());
+  BaseCrypto* crypto = new BlowFish(opt->getInputFileName(), opt->getOutputFileName(), opt->getKeyFileName());
   if (opt->isEncrypted())
-    blowfish->Encrypt();
+    crypto->Encrypt();
   else
-    blowfish->Decrypt();
-  delete blowfish;
-  blowfish = 0;
+    crypto->Decrypt();
+  delete crypto;
+  crypto = 0;
 
   GetOpt::Destroy();
   return 0;
