@@ -12,7 +12,7 @@ namespace crypto {
 
   GetOpt* GetOpt::instance = 0;
 
-  GetOpt::GetOpt(): is_encrypted(true) {}
+  GetOpt::GetOpt(): is_encrypted(true), algorithmType() {}
   GetOpt::~GetOpt() {}
 
   GetOpt* GetOpt::Instance() {
@@ -30,8 +30,15 @@ namespace crypto {
   void GetOpt::parseArgs(int argc, char **argv) {
     int c;
     progName = string(argv[0]);
-    while(( c = getopt(argc, argv,"di:o:k:")) != -1) {
+    while(( c = getopt(argc, argv,"da:i:o:k:")) != -1) {
       switch(c) {
+        case 'a': {
+          string algorithm = string(optarg);
+          if (algorithm.length()) {
+            algorithmType.name = algorithm;
+          }
+        }
+        break;
         case 'd':
           is_encrypted = false;
         break;
@@ -55,6 +62,20 @@ namespace crypto {
     if (argc > 0)
      printUsage();
     argv += optind;
+
+    fillAlgorithmType();
+  }
+
+  void GetOpt::fillAlgorithmType() {
+    if (!strcmp(algorithmType.name.c_str(), STR_BLOWFISH_)) {
+      algorithmType.type = BLOWFISH_;
+    }
+    else if (!strcmp(algorithmType.name.c_str(), STR_DES_)) {
+      algorithmType.type = DES_;
+    }
+    else {
+      algorithmType.name = STR_NULL_;
+    }
   }
 
   bool GetOpt::isEncrypted() {
@@ -77,6 +98,10 @@ namespace crypto {
     return keyFileName;
   }
 
+  const AlgorithmType& GetOpt::getAlgorithmType() const {
+    return algorithmType;
+  }
+
   void GetOpt::printUsage() {
     std::cout << "usage: " << progName
       << " [-d] -i <input file name> -o <output file name> -k <key file name>\n";
@@ -90,7 +115,8 @@ namespace crypto {
       << " is encrypted: " << ((is_encrypted) ? "true" : "false") << "\n"
       << " input file name: '" << inputFileName << "'\n"
       << " output file name: '" << outputFileName << "'\n"
-      << " key file name: '" << keyFileName << "'\n\n";
+      << " key file name: '" << keyFileName << "'\n"
+      << " encryption algorithm name: '" << algorithmType.name << "'\n\n";
   }
 
 } // namespace crypto
