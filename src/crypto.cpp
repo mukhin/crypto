@@ -3,10 +3,13 @@
 #include "getopt.h"
 #include "blowfish_algorithm.h"
 #include "des_algorithm.h"
+#include "version.h"
 
 using namespace crypto;
 
 int main(int argc, char **argv) {
+
+  std::cout << "crypto v." << CRYPTO_VERSION << " is started\n";
 
   GetOpt* opt = GetOpt::Instance();
   opt->parseArgs(argc, argv);
@@ -32,5 +35,7 @@ int main(int argc, char **argv) {
   }
 
   GetOpt::Destroy();
+
+  std::cout << "crypto is done\n";
   return 0;
 }
