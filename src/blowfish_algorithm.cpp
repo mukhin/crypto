@@ -13,42 +13,20 @@ using std::string;
 
 namespace crypto {
 
-  BlowFish::BlowFish(): inputFileName(IN_FNAME), outputFileName(OUT_FNAME), keyFileName(KEY_FNAME) {
-    readKey();
+  BlowFish::BlowFish(): BaseCrypto() {
     initSubKeys();
   }
 
-  BlowFish::BlowFish(string inFN, string outFN, string keyFN):
-    inputFileName(IN_FNAME), outputFileName(OUT_FNAME), keyFileName(KEY_FNAME) {
-    if (inFN.length())
-      inputFileName = inFN;
-    if (outFN.length())
-      outputFileName = outFN;
-    if (keyFN.length())
-      keyFileName = keyFN;
-
-    readKey();
+  BlowFish::BlowFish(string inFN, string outFN, string keyFN): BaseCrypto(inFN, outFN, keyFN) {
     initSubKeys();
   }
 
   BlowFish::~BlowFish() {}
 
-  void BlowFish::readKey() {
-    ifstream keyFile(keyFileName.c_str(), std::ifstream::binary);
-    if (keyFile.good()) {
-      typedef istreambuf_iterator<char> iter;
-      key = string((iter(keyFile)), iter());
-      keyFile.close();
-    }
-    else {
-      logFileOpenError(keyFileName);
-    }
-  }
-
   void BlowFish::Process(void (*Func)(unit32&, unit32&, unit32 [N_2], unit32 [ROWS][COL])) {
-    ifstream inputFile(inputFileName.c_str(), ifstream::binary);
+    ifstream inputFile(getInputFileName().c_str(), ifstream::binary);
     if (inputFile.good()) {
-      ofstream outputFile(outputFileName.c_str(), ofstream::binary);
+      ofstream outputFile(getOutputFileName().c_str(), ofstream::binary);
       if (outputFile.good()) {
         uint64 buffer;
         while(inputFile.good()) {
@@ -63,12 +41,12 @@ namespace crypto {
         outputFile.close();
       }
       else {
-        logFileOpenError(outputFileName);
+        logFileOpenError(getOutputFileName());
       }
       inputFile.close();
     }
     else {
-      logFileOpenError(inputFileName);
+      logFileOpenError(getInputFileName());
     }
   }
 
@@ -98,10 +76,10 @@ namespace crypto {
     for (i = 0; i < N + 2; ++i) {
       unit32 data = 0;
       for (k = 0; k < ROWS; ++k) {
-        if (j >= key.length()) {
+        if (j >= getKey().length()) {
           j = 0;
         }
-        data = (data << 8) | key[j];
+	data = (data << 8) | getKey()[j];
         ++j;
       }
       P[i] ^= data;
