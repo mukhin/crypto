@@ -1,3 +1,9 @@
+0.2:
+
+2010-12-27  Andrey Mukhin  <a.mukhin77@gmail.com>
+
+        Added abstract base class for the crypto algorithms family
+
 0.1:
 
 2010-12-25  Andrey Mukhin  <a.mukhin77@gmail.com>
