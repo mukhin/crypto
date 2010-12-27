@@ -1,6 +1,6 @@
 ##
 
-AC_INIT([crypto], [0.2], [a.mukhin77@gmail.com])
+AC_INIT([crypto], [0.3], [a.mukhin77@gmail.com])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall -W no-define])
 
