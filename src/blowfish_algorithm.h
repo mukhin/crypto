@@ -14,7 +14,7 @@ namespace crypto {
     public:
       BlowFish();
       BlowFish(string inputFN, string outputFN, string keyFN);
-      virtual ~BlowFish();
+      ~BlowFish();
       void Encrypt();
       void Decrypt();
 

@@ -1,6 +1,6 @@
 
 #include "blowfish_algorithm.h"
-#include "resources.h"
+#include "blowfish_sboxes.h"
 
 #include <string>
 #include <iostream>
