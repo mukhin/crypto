@@ -1,4 +1,4 @@
-/* crypto.cpp */
+/** @file crypto.cpp */
 
 #include "getopt.h"
 #include "blowfish_algorithm.h"

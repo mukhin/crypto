@@ -1,3 +1,4 @@
+/** @file blowfish_algorithm.cpp */
 
 #include "blowfish_algorithm.h"
 #include "blowfish_sboxes.h"
@@ -23,41 +24,6 @@ namespace crypto {
 
   BlowFish::~BlowFish() {}
 
-  void BlowFish::Process(void (*Func)(unit32&, unit32&, unit32 [N_2], unit32 [ROWS][COL])) {
-    ifstream inputFile(getInputFileName().c_str(), ifstream::binary);
-    if (inputFile.good()) {
-      ofstream outputFile(getOutputFileName().c_str(), ofstream::binary);
-      if (outputFile.good()) {
-        uint64 buffer;
-        while(inputFile.good()) {
-          memset(&buffer, 0, sizeof(buffer));
-          inputFile.read(reinterpret_cast<char*>(&buffer), sizeof(buffer));
-          if(inputFile.good()
-            || (!inputFile.good() && (buffer.left != 0 || buffer.right != 0))) {
-            Func(buffer.left, buffer.right, P, SBox);
-            outputFile.write(reinterpret_cast<char*>(&buffer), sizeof(buffer));
-          }
-        }
-        outputFile.close();
-      }
-      else {
-        logFileOpenError(getOutputFileName());
-      }
-      inputFile.close();
-    }
-    else {
-      logFileOpenError(getInputFileName());
-    }
-  }
-
-  void BlowFish::Encrypt() {
-    Process(Enc);
-  }
-
-  void BlowFish::Decrypt() {
-    Process(Dec);
-  }
-
   void BlowFish::initSubKeys() {
     int i, j, k, cnt = 0;
     for (int i = 0; i < N + 2; ++i) {
@@ -74,44 +40,47 @@ namespace crypto {
 
     j = 0;
     for (i = 0; i < N + 2; ++i) {
-      unit32 data = 0;
+      Word data = 0;
       for (k = 0; k < ROWS; ++k) {
         if (j >= getKey().length()) {
           j = 0;
         }
-	data = (data << 8) | getKey()[j];
+        data = (data << 8) | getKey()[j];
         ++j;
       }
       P[i] ^= data;
     }
 
-    unit32 lData = 0;
-    unit32 rData = 0;
+    Dword dwValue = 0;
 
     for (i = 0; i < N + 2; i += 2) {
-      Enc(lData, rData, P, SBox);
-      P[i] = lData;
-      P[i + 1] = rData;
+      Crypt(dwValue, true);
+      P[i] = HiWORD(dwValue);
+      P[i + 1] = LoWORD(dwValue);
     }
 
     for (i = 0; i < ROWS; ++i) {
       for (j = 0; j < COL; j += 2) {
-        Enc(lData, rData, P, SBox);
-        SBox[i][j] = lData;
-        SBox[i][j + 1] = rData;
+        Crypt(dwValue, true);
+        SBox[i][j] = HiWORD(dwValue);
+        SBox[i][j + 1] = LoWORD(dwValue);
       }
     }
   }
 
-  void BlowFish::Enc(unit32 &left, unit32 &right, unit32 P[N_2], unit32 SBox[ROWS][COL]) {
-    unit32  lPart, rPart, tPart;
-
-    lPart = left;
-    rPart = right;
+  void BlowFish::Crypt(Dword& dwValue, bool fgDirection) {
+    Word rPart = LoWORD(dwValue);
+    Word lPart = HiWORD(dwValue);
+    Word tPart = 0;
 
     for (int i = 0; i < N; ++i) {
-      lPart ^= P[i];
-      rPart ^= F(lPart, SBox);
+      if (fgDirection) {
+        lPart ^= P[i];
+      }
+      else {
+        lPart ^= P[N + 1 - i];
+      }
+      rPart ^= F(lPart);
 
       tPart = lPart;
       lPart = rPart;
@@ -122,41 +91,20 @@ namespace crypto {
     lPart = rPart;
     rPart = tPart;
 
-    rPart ^= P[N];
-    lPart ^= P[N + 1];
-
-    left = lPart;
-    right = rPart;
-  }
-
-  void BlowFish::Dec(unit32 &left, unit32 &right, unit32 P[N_2], unit32 SBox[ROWS][COL]) {
-    unit32  lPart, rPart, tPart;
-
-    lPart = left;
-    rPart = right;
-
-    for (int i = N + 1; i > 1; --i) {
-      lPart ^= P[i];
-      rPart ^= F(lPart, SBox);
-
-      tPart = lPart;
-      lPart = rPart;
-      rPart = tPart;
+    if (fgDirection) {
+      rPart ^= P[N];
+      lPart ^= P[N + 1];
+    }
+    else {
+      rPart ^= P[1];
+      lPart ^= P[0];
     }
 
-    tPart = lPart;
-    lPart = rPart;
-    rPart = tPart;
-
-    rPart ^= P[1];
-    lPart ^= P[0];
-
-    left = lPart;
-    right = rPart;
+    dwValue = (static_cast<Dword>(lPart) << BITSINWORD) | rPart;
   }
 
-  unit32 BlowFish::F(unit32 x, unit32 SBox[ROWS][COL]) {
-    unit32 f, a, b, c, d;
+  Word BlowFish::F(Word x) {
+    Word f, a, b, c, d;
 
     a = x & 0x00FF;
     x >>= 8;

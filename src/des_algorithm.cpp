@@ -1,3 +1,4 @@
+/** @file des_algorithm.cpp */
 
 #include "des_algorithm.h"
 #include "des_sboxes.h"
@@ -23,43 +24,6 @@ namespace crypto {
 
   Des::~Des() {}
 
-  void Des::Process(bool fgDirection) {
-    ifstream inputFile(getInputFileName().c_str(), ifstream::binary);
-    if (inputFile.good()) {
-      ofstream outputFile(getOutputFileName().c_str(), ofstream::binary);
-      if (outputFile.good()) {
-        Dword dwValue = 0;
-        while(inputFile.good()) {
-          dwValue = 0;
-          inputFile.read(reinterpret_cast<char*>(&dwValue), sizeof(dwValue));
-          if(inputFile.good()
-            || (!inputFile.good() && dwValue > 0)) {
-            SetValue(dwValue);
-            Crypt(fgDirection);
-            SetValue(dwData, dwResult);
-            outputFile.write(reinterpret_cast<char*>(&dwResult), sizeof(dwResult));
-          }
-        }
-        outputFile.close();
-      }
-      else {
-        logFileOpenError(getOutputFileName());
-      }
-      inputFile.close();
-    }
-    else {
-      logFileOpenError(getInputFileName());
-    }
-  }
-
-  void Des::Encrypt() {
-    Process(true);
-  }
-
-  void Des::Decrypt() {
-    Process(false);
-  }
-
   void Des::initSubKeys() {
     string key = getKey();
     key.resize(sizeof(dwMaster));
@@ -80,11 +44,14 @@ namespace crypto {
     c = d = 0;
   }
 
-  void Des::Crypt(bool fgDirection) {
+  void Des::Crypt(Dword& dwValue, bool fgDirection) {
     Dword a;
     Dword b;
+    Dword dwData;
 
-    STIRBITS(dwData, 64, bIP1, a);
+    SetValue(dwValue, dwData);
+
+    STIRBITS(dwData, BITSINDWORD, bIP1, a);
     Word r = HiWORD(a);
     Word l = LoWORD(a);
     Word s;
@@ -101,27 +68,19 @@ namespace crypto {
         a <<= 4;
         a |= bS[j][(b >> ((7 - j) * 6)) & 0x3f];
       }
-      STIRBITS(a, 32, bP, b);
+      STIRBITS(a, BITSINWORD, bP, b);
 
       s = r;
       r = l ^ LoWORD(b);
       l = s;
     }
-    a = ((Dword)l << 32) | r;
-    STIRBITS(a, 64, bIP2, dwData);
+    a = ((Dword)l << BITSINWORD) | r;
+    STIRBITS(a, BITSINDWORD, bIP2, dwData);
     a = b = l = r = 0; // Cleanup
-  }
-
-  void Des::SetValue(const Dword& dwValue) {
-    MIRROR(dwValue, 64, dwData);
+    SetValue(dwData, dwValue);
   }
 
   void Des::SetValue(const Dword& dwValue, Dword& dwData) {
-    MIRROR(dwValue, 64, dwData);
-  }
-
-  Dword Des::GetValue() {
-    MIRROR(dwData, 64, dwResult);
-    return dwResult;
+    MIRROR(dwValue, BITSINDWORD, dwData);
   }
 }

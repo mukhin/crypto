@@ -1,3 +1,7 @@
+/** @file des_sboxes.h
+SBoxes and Initialization vectors for DES
+*/
+
 #ifndef DESSBOXES_H_
 #define DESSBOXES_H_
 

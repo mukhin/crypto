@@ -1,4 +1,4 @@
-/* getopt.cpp */
+/** @file getopt.cpp */
 
 #include "getopt.h"
 

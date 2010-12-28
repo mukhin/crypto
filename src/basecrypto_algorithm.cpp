@@ -1,3 +1,4 @@
+/** @file basecrypto_algorithm.cpp */
 
 #include "basecrypto_algorithm.h"
 #include "resources.h"
@@ -40,6 +41,41 @@ namespace crypto {
     else {
       logFileOpenError(keyFileName);
     }
+  }
+
+  void BaseCrypto::Process(bool fgDirection) {
+    ifstream inputFile(getInputFileName().c_str(), ifstream::binary);
+    if (inputFile.good()) {
+      ofstream outputFile(getOutputFileName().c_str(), ofstream::binary);
+      if (outputFile.good()) {
+        Dword dwValue = 0;
+        while(inputFile.good()) {
+          dwValue = 0;
+          inputFile.read(reinterpret_cast<char*>(&dwValue), sizeof(dwValue));
+          if(inputFile.good()
+            || (!inputFile.good() && dwValue > 0)) {
+            Crypt(dwValue, fgDirection);
+            outputFile.write(reinterpret_cast<char*>(&dwValue), sizeof(dwValue));
+          }
+        }
+        outputFile.close();
+      }
+      else {
+        logFileOpenError(getOutputFileName());
+      }
+      inputFile.close();
+    }
+    else {
+      logFileOpenError(getInputFileName());
+    }
+  }
+
+  void BaseCrypto::Encrypt() {
+    Process(true);
+  }
+
+  void BaseCrypto::Decrypt() {
+    Process(false);
   }
 
   const string& BaseCrypto::getInputFileName() const {

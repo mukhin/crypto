@@ -1,3 +1,5 @@
+/** @file des_algorithm.h */
+
 #ifndef DES_ALGORITHM_H_
 #define DES_ALGORITHM_H_
 
@@ -9,38 +11,35 @@
 using std::string;
 
 namespace crypto {
-
+  /** Des algorithm realization */
   class Des: public BaseCrypto {
     public:
+      /** Constructor */
       Des();
+      /** Constructor with parameters
+      @param inputFN incoming file name
+      @param outputFN output file name
+      @param key file name */
       Des(string inputFN, string outputFN, string keyFN);
+      /** Destructor */
       ~Des();
-      void Encrypt();
-      void Decrypt();
 
     private:
+      /** Init sub keys */
       void initSubKeys();
-      /** ECB encryption process
-      @param fgDirection true = decrypt, false = encrypt */
-      void Process(bool fgDirection);
 
-      /** Crypt function
+      /** Crypto function
+      @param dwValue incoming block
       @param fgDirection true = decrypt, false = encrypt */
-      void Crypt(bool fgDirection);
+      void Crypt(Dword& dwValue, bool fgDirection);
 
-      void SetValue(const Dword& dwValue);
       void SetValue(const Dword& src, Dword& dst);
-      Dword GetValue();
 
     private:
       /** Master key */
       Dword dwMaster;
       /** Subkeys */
       Dword dwKey[16];
-      /** 64-bit Block of the plain text */
-      Dword dwData;
-      /** 64-bit Block of the cipher text */
-      Dword dwResult;
   };
 }
 

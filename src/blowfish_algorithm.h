@@ -1,3 +1,5 @@
+/** @file blowfish_algorithm.h */
+
 #ifndef BLOWFISH_ALGORITHM_H_
 #define BLOWFISH_ALGORITHM_H_
 
@@ -10,24 +12,34 @@ using std::string;
 
 namespace crypto {
 
+  /** Blowfish algorithm realization */
   class BlowFish: public BaseCrypto {
     public:
+      /** Constructor */
       BlowFish();
+      /** Constructor with parameters
+      @param inputFN incoming file name
+      @param outputFN output file name
+      @param key file name */
       BlowFish(string inputFN, string outputFN, string keyFN);
+      /** Destructor */
       ~BlowFish();
-      void Encrypt();
-      void Decrypt();
 
     private:
+      /** Init sub keys */
       void initSubKeys();
-      void Process(void (*Func)(unit32&, unit32&, unit32 [N_2], unit32 [ROWS][COL]));
-      static void Enc(unit32& left, unit32& right, unit32 P[N_2], unit32 SBox[ROWS][COL]);
-      static void Dec(unit32& left, unit32& right, unit32 P[N_2], unit32 SBox[ROWS][COL]);
-      static unit32 F(unit32 x, unit32 SBox[ROWS][COL]);
+      /** Crypto function
+      @param dwValue incoming block
+      @param fgDirection true = decrypt, false = encrypt */
+      void Crypt(Dword& dwValue, bool fgDirection);
+      /** F-function */
+      Word F(Word x);
 
     private:
-      unit32 P[N_2];
-      unit32 SBox[ROWS][COL];
+      /** Subkeys */
+      Word P[N_2];
+      /** SBoxes */
+      Word SBox[ROWS][COL];
   };
 }
 

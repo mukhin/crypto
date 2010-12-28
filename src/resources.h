@@ -1,3 +1,7 @@
+/** @file resources.h
+Describes some common functions and variables
+*/
+
 #ifndef RESOURCES_H_
 #define RESOURCES_H_
 
@@ -11,6 +15,7 @@
 #define ONE  DWORDCONST(0x1)
 
 #define BITSINWORD  32
+#define BITSINDWORD  64
 
 // Operations with DWORDs
 #define HiWORD(a)  ((Word)((a) >> BITSINWORD))
@@ -28,16 +33,10 @@
 #define MIRROR(a, b, c) { c = 0; for (int ii = 0; ii < (b); ii++) { c <<= 1; c |= (a >> ii) & 1; } }
 
 namespace crypto {
-  typedef unsigned long Word;
+  typedef unsigned int Word;
   typedef unsigned long long Dword;
   typedef unsigned char Byte;
   typedef unsigned short Short;
-
-  typedef unsigned long unit32;
-  typedef struct Uint64 {
-    unit32 left;
-    unit32 right;
-  } uint64;
 
   enum ALGORITHM_TYPES{BLOWFISH_, DES_, NULL_};
   static const char* STR_BLOWFISH_ = "blowfish";

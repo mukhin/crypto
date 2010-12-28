@@ -1,4 +1,4 @@
-/* getopt.h */
+/** @file getopt.h */
 
 #ifndef GETOPT_H_
 #define GETOPT_H_
@@ -10,22 +10,34 @@ using std::string;
 
 namespace crypto {
 
+  /** Algorithm description structure. Singleton */
   struct AlgorithmType {
+    /** algorithm name */
     string name;
+    /** algorithm type @see ALGORITHM_TYPES */
     ALGORITHM_TYPES type;
+    /** Constructor */
     AlgorithmType(): name(STR_NULL_), type(NULL_){}
   };
 
+  /** Incoming program arguments parser */
   class GetOpt {
     private:
+      /** Constructor */
       GetOpt();
+      /** Destructor */
       ~GetOpt();
     public:
       static GetOpt* Instance();
       static void Destroy();
+      /** Incoming arguments parser */
       void parseArgs(int argc, char **argv);
+      /** Show help */
       void printUsage();
+      /** Show incoming arguments */
       void printArgs();
+
+      /* Some getters */
       bool isEncrypted();
       const string& getProgName() const;
       const string& getInputFileName() const;
@@ -33,6 +45,7 @@ namespace crypto {
       const string& getKeyFileName() const;
       const AlgorithmType& getAlgorithmType() const;
     private:
+      /** Define algorithm type by name */
       void fillAlgorithmType();
     private:
       bool is_encrypted;
@@ -41,6 +54,7 @@ namespace crypto {
       string outputFileName;
       string keyFileName;
       AlgorithmType algorithmType;
+    private:
       static GetOpt* instance;
   };
 } // namespace crypto
