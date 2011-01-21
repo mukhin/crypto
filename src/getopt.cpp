@@ -104,7 +104,7 @@ namespace crypto {
 
   void GetOpt::printUsage() {
     std::cout << "usage: " << progName
-      << " [-d] -i <input file name> -o <output file name> -k <key file name>\n";
+      << " [-d] -a <algorithm> -i <input file name> -o <output file name> -k <key file name>\n";
     Destroy();
     exit(0);
   }
