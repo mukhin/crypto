@@ -1,5 +1,6 @@
 /** @file crypto.cpp */
 
+#include "crypto_factory.h"
 #include "getopt.h"
 #include "blowfish_algorithm.h"
 #include "des_algorithm.h"
@@ -15,15 +16,9 @@ int main(int argc, char **argv) {
   opt->parseArgs(argc, argv);
   opt->printArgs();
 
-  BaseCrypto* crypto = 0;
-  switch (opt->getAlgorithmType().type) {
-    case BLOWFISH_:
-      crypto = new BlowFish(opt->getInputFileName(), opt->getOutputFileName(), opt->getKeyFileName());
-    break;
-    case DES_:
-      crypto = new Des(opt->getInputFileName(), opt->getOutputFileName(), opt->getKeyFileName());
-    default: break;
-  }
+  CryptoFactory* factory = CryptoFactory::Instance();
+  factory->Init(opt->getInputFileName(), opt->getOutputFileName(), opt->getKeyFileName());
+  BaseCrypto* crypto = factory->getCryptoInstance(opt->getAlgorithmType().type);
 
   if (crypto) {
     if (opt->isEncrypted())
@@ -34,8 +29,12 @@ int main(int argc, char **argv) {
     crypto = 0;
   }
 
+  CryptoFactory::Destroy();
+
   GetOpt::Destroy();
 
   std::cout << "crypto is done\n";
   return 0;
 }
+
+
