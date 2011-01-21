@@ -21,12 +21,11 @@ int main(int argc, char **argv) {
   BaseCrypto* crypto = factory->getCryptoInstance(opt->getAlgorithmType().type);
 
   if (crypto) {
+    crypto->Init();
     if (opt->isEncrypted())
       crypto->Encrypt();
     else
       crypto->Decrypt();
-    delete crypto;
-    crypto = 0;
   }
 
   CryptoFactory::Destroy();

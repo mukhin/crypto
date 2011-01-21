@@ -27,6 +27,8 @@ namespace crypto {
       void Encrypt();
       /** Decryption function (Process(false) wrapper)*/
       void Decrypt();
+      /** Some initialization might be empty*/
+      virtual void Init()=0;
 
       /* Some getters */
       const string& getInputFileName() const;

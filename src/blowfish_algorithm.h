@@ -24,10 +24,10 @@ namespace crypto {
       BlowFish(string inputFN, string outputFN, string keyFN);
       /** Destructor */
       ~BlowFish();
+      /** Init sub keys */
+      void Init();
 
     private:
-      /** Init sub keys */
-      void initSubKeys();
       /** Crypto function
       @param dwValue incoming block
       @param fgDirection true = decrypt, false = encrypt */

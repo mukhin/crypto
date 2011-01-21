@@ -14,8 +14,8 @@ namespace crypto {
 
   CryptoFactory::CryptoFactory() {}
 
-  BaseCrypto* CryptoFactory::getCryptoInstance(ALGORITHM_TYPES id) {
-    InstantiatorMap::iterator itr = m_instantiatorMap.find(id);
+  BaseCrypto* CryptoFactory::getCryptoInstance(ALGORITHM_TYPES id) const {
+    InstantiatorMap::const_iterator itr = m_instantiatorMap.find(id);
     if (itr != m_instantiatorMap.end()) {
       return (*itr).second;
     }

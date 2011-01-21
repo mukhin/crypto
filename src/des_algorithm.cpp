@@ -14,17 +14,13 @@ using std::string;
 
 namespace crypto {
 
-  Des::Des(): BaseCrypto() {
-    initSubKeys();
-  }
+  Des::Des(): BaseCrypto() {}
 
-  Des::Des(string inFN, string outFN, string keyFN): BaseCrypto(inFN, outFN, keyFN) {
-    initSubKeys();
-  }
+  Des::Des(string inFN, string outFN, string keyFN): BaseCrypto(inFN, outFN, keyFN) {}
 
   Des::~Des() {}
 
-  void Des::initSubKeys() {
+  void Des::Init() {
     string key = getKey();
     key.resize(sizeof(dwMaster));
     memcpy(&dwMaster, key.data(), sizeof(dwMaster));

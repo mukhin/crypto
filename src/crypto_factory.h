@@ -21,9 +21,9 @@ namespace crypto {
       static CryptoFactory* Instance();
       static void Destroy();
       void Init(string inputFN, string outputFN, string keyFN);
-      BaseCrypto* getCryptoInstance(ALGORITHM_TYPES id);
-      void registerCryptoInstantiator(ALGORITHM_TYPES id, BaseCrypto* alg);
+      BaseCrypto* getCryptoInstance(ALGORITHM_TYPES id) const;
     private:
+      void registerCryptoInstantiator(ALGORITHM_TYPES id, BaseCrypto* alg);
       InstantiatorMap m_instantiatorMap;
       static CryptoFactory* instance;
   };

@@ -14,17 +14,13 @@ using std::string;
 
 namespace crypto {
 
-  BlowFish::BlowFish(): BaseCrypto() {
-    initSubKeys();
-  }
+  BlowFish::BlowFish(): BaseCrypto() {}
 
-  BlowFish::BlowFish(string inFN, string outFN, string keyFN): BaseCrypto(inFN, outFN, keyFN) {
-    initSubKeys();
-  }
+  BlowFish::BlowFish(string inFN, string outFN, string keyFN): BaseCrypto(inFN, outFN, keyFN) {}
 
   BlowFish::~BlowFish() {}
 
-  void BlowFish::initSubKeys() {
+  void BlowFish::Init() {
     int i, j, k, cnt = 0;
     for (int i = 0; i < N + 2; ++i) {
       P[cnt] = SBOX_INITIALIZER[cnt];

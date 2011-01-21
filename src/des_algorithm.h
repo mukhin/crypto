@@ -23,11 +23,10 @@ namespace crypto {
       Des(string inputFN, string outputFN, string keyFN);
       /** Destructor */
       ~Des();
+      /** Init sub keys */
+      void Init();
 
     private:
-      /** Init sub keys */
-      void initSubKeys();
-
       /** Crypto function
       @param dwValue incoming block
       @param fgDirection true = decrypt, false = encrypt */
