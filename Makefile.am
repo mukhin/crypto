@@ -16,7 +16,7 @@ bin_PROGRAMS = crypto
 ## the C++ compiler to produce an object file (.o) from each source file. The
 ## header files (.h) do not result in object files by themselves, but will be
 ## included in distribution archives of the project.
-crypto_SOURCES = src/crypto.cpp src/getopt.cpp src/blowfish_algorithm.cpp src/basecrypto_algorithm.cpp src/des_algorithm.cpp src/getopt.h src/blowfish_algorithm.h src/blowfish_sboxes.h src/resources.h src/basecrypto_algorithm.h src/des_algorithm.h src/des_sboxes.h
+crypto_SOURCES = src/crypto.cpp src/getopt.cpp src/blowfish_algorithm.cpp src/basecrypto_algorithm.cpp src/des_algorithm.cpp src/crypto_factory.cpp src/getopt.h src/blowfish_algorithm.h src/blowfish_sboxes.h src/resources.h src/basecrypto_algorithm.h src/des_algorithm.h src/des_sboxes.h src/crypto_factory.h
 
 ## Define an independent executable script for inclusion in the distribution
 ## archive. It will not be installed on an end user's system, however.
