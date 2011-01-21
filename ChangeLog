@@ -1,3 +1,8 @@
+0.4
+2011-01-20  Andrey Mukhin  <a.mukhin77@gmail.com>
+
+	Replaced switch by the objects factory.
+
 0.3
 
 2010-12-27  Andrey Mukhin  <a.mukhin77@gmail.com>
